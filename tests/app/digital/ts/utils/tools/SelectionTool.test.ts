@@ -155,7 +155,27 @@ describe("Selection Tool", () => {
             expect(designer.getObjects().length).toBe(0);
         });
 
-        // TODO: Add test for deleting wire
+        // TODO: Add test for deleting wire (done below)
+
+        test("Click to Select Wire and Delete Wire", () => {
+            const obj1 = new Switch();
+            const obj2 = new ANDGate();
+            obj2.setPos(V(200, -12.5));
+
+            Place(designer, [obj1, obj2]);
+            const wire = Connect(obj1, 0, obj2, 0).getWire();
+
+            input.click(V(100, 0));
+            expect(selections().length).toBe(1);
+            expect(selections()).toContain(wire);
+
+            input.drag(V(-100, 100),
+                    V(100, -100))
+                 .pressKey(DELETE_KEY);
+            expect(selections().length).toBe(0);
+            expect(designer.getObjects().length).toBe(0);
+        });
+            
     });
 
     describe("Multiple Objects", () => {
@@ -170,7 +190,7 @@ describe("Selection Tool", () => {
             obj1.setPos(V(100, 0));
             Place(designer, [obj1, obj2]);
 
-            input.click(V(0, 0));
+            input.click(obj2.getPos());
             input.pressKey(SHIFT_KEY);
             input.click(obj1.getPos());
             input.releaseKey(SHIFT_KEY);
@@ -184,7 +204,29 @@ describe("Selection Tool", () => {
             expect(selections().length).toBe(0);
         });
 
-        // TODO: Add test for deleting multiple objects/wires
+        // TODO: Add test for deleting multiple objects/wires (done below)
+
+            test("Click with Shift to Select Objects then Delete Objects", () => {
+                const obj1 = new ANDGate();
+                const obj2 = new Multiplexer();
+                obj1.setPos(V(100, 0));
+                Place(designer, [obj1, obj2]);
+    
+                input.click(obj2.getPos());
+                input.pressKey(SHIFT_KEY);
+                input.click(obj1.getPos());
+                input.releaseKey(SHIFT_KEY);
+    
+                expect(selections().length).toBe(2);
+                expect(selections()).toContain(obj1);
+                expect(selections()).toContain(obj2);
+
+                input.drag(V(-100, 100),
+                        V(100, -100))
+                    .pressKey(BACKSPACE_KEY);
+                expect(selections().length).toBe(0);
+                expect(designer.getObjects().length).toBe(0);
+            });                
     });
 
 });
