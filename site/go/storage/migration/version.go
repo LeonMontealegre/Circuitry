@@ -52,7 +52,7 @@ func parser(db *sql.DB) []versionStruct {
 	return vs
 }
 
-// Check if the table's integreity.
+// Check table's integreity.
 func integrityCheck(vs []versionStruct) bool {
 
 	// sort version slice
@@ -60,9 +60,45 @@ func integrityCheck(vs []versionStruct) bool {
 		return vs[i].id < vs[j].id
 	})
 
-	// loop over...
-	for i, v := range vs {
-	}
+	// loop over to check integrity...
+	// for i, v := range vs {
+	//
+	// }
 
 	return true
+}
+
+// Pre versioning handle
+func isPreVersioning(db *sql.DB) bool {
+	rows, err := db.Query("PRAGMA table_info(circuits)")
+	defer rows.Close()
+
+	var fieldNames []string
+
+	for rows.Next() {
+		var cid int64
+		var name string
+		var dtype string
+		var notnull bool
+		var dfltValue string
+		var pk bool
+
+		err := rows.Scan(&cid, &name, &dtype, &notnull, &dfltValue, &pk)
+		if err != nil {
+			return nil
+		}
+		fieldNames = append(fieldNames, name)
+	}
+
+	// This structure is the default for pre versioning versions.
+	if fieldNames[0] == "id" &&
+		fieldNames[0] == "name" &&
+		fieldNames[2] == "designer" &&
+		fieldNames[3] == "ownerId" &&
+		fieldNames[4] == "version" &&
+		fieldNames[5] == "thumbnail" {
+		return true
+	} else {
+		return false
+	}
 }
