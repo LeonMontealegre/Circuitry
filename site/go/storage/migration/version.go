@@ -5,7 +5,7 @@ import (
 	"errors"
 	"sort"
 
-	_ "github.com/mattn/go-sqlite3" // We don't really need code in this package.
+	_ "github.com/mattn/go-sqlite3" // We don't really need code in this package, just symbols.
 )
 
 type versionStruct struct {
@@ -33,6 +33,7 @@ func TableInit(db *sql.DB) error {
 	return nil
 }
 
+// Pasering data from version table
 func parser(db *sql.DB) []versionStruct {
 	rows, err := db.Query("SELECT id, date-tag FROM version")
 	defer rows.Close()
@@ -60,22 +61,31 @@ func integrityCheck(vs []versionStruct) bool {
 		return vs[i].id < vs[j].id
 	})
 
+	// TODO when new versions are available, verify their record
+	// format, date, etc.
 	// loop over to check integrity...
 	// for i, v := range vs {
+	//		if ... {
+	//			return false
+	// 		}
 	//
 	// }
 
 	return true
 }
 
-// Pre versioning handle
+// Pre versioning handle. If format matches, return true.
 func isPreVersioning(db *sql.DB) bool {
-	rows, err := db.Query("PRAGMA table_info(circuits)")
+	rows, _ := db.Query("PRAGMA table_info(circuits)") // meta info
 	defer rows.Close()
 
 	var fieldNames []string
 
 	for rows.Next() {
+
+		// meta info table scheme
+		// only using names
+
 		var cid int64
 		var name string
 		var dtype string
@@ -85,7 +95,7 @@ func isPreVersioning(db *sql.DB) bool {
 
 		err := rows.Scan(&cid, &name, &dtype, &notnull, &dfltValue, &pk)
 		if err != nil {
-			return nil
+			return errors.New("Table corrupted")
 		}
 		fieldNames = append(fieldNames, name)
 	}
