@@ -1,4 +1,4 @@
-#Welcome to OpenCircuits!
+# Welcome to OpenCircuits!
 
 I wanted to create this document to help you have a seamless transition into the team and answer some questions that you may have. Firstly, you may be wondering what OpenCircuits is. 
 OpenCircuits is an open-source circuit designer that was created by Leon Montealegre, who is the program manager. The team is also currently in the process of creating OpenCircuitsEE which is an open-source circuit designer geared towards electrical engineering and computer systems engineering students at RPI. We are hoping that OpenCircuitsEE will replace the current LTspice programs being used in the ECSE curriculum. You will have the freedom to work on either project throughout the semester.
