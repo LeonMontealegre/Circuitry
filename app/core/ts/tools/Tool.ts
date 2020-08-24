@@ -58,6 +58,10 @@ export abstract class Tool implements MouseListener, KeyboardListener {
         return false;
     }
 
+    public onDragEnd(_input: Input, _button: number): boolean {
+        return false;
+    }
+
     public onClick(_input: Input, _button: number): boolean {
         return false;
     }

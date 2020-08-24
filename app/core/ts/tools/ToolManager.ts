@@ -158,6 +158,10 @@ export class ToolManager implements MouseListener, KeyboardListener {
         return this.onEvent((i: Input,b?: number) => this.currentTool.onMouseUp(i,b), "mouseup", input, button);
     }
 
+    public onDragEnd(input: Input, button: number): boolean {
+        return this.onEvent((i: Input,b?: number) => this.currentTool.onDragEnd(i,b), "dragend", input, button);
+    }
+
     public onClick(input: Input, button: number): boolean {
         return this.onEvent((i: Input,b?: number) => this.currentTool.onClick(i,b), "onclick", input, button);
     }

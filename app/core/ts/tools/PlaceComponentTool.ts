@@ -27,7 +27,7 @@ export class PlaceComponentTool extends Tool {
     }
 
     public shouldDeactivate(event: string): boolean {
-        return (event == "onclick") || this.component == undefined;
+        return (event == "onclick") || (event == "dragend") || this.component == undefined;
     }
 
     public deactivate(): Action {

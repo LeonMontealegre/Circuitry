@@ -55,6 +55,7 @@ export abstract class DesignerController {
         this.input.addListener("mousedrag", (b) => !this.active || this.onMouseDrag(b));
         this.input.addListener("mousemove", ( ) => !this.active || this.onMouseMove());
         this.input.addListener("mouseup",   (b) => !this.active || this.onMouseUp(b));
+        this.input.addListener("dragend",   (b) => !this.active || this.onDragEnd(b));
         this.input.addListener("keydown",   (b) => !this.active || this.onKeyDown(b));
         this.input.addListener("keyup",     (b) => !this.active || this.onKeyUp(b));
         this.input.addListener("zoom",    (z,c) => !this.active || this.onZoom(z,c));
@@ -105,6 +106,14 @@ export abstract class DesignerController {
 
     protected onMouseUp(button: number): boolean {
         if (this.toolManager.onMouseUp(this.input, button)) {
+            this.render();
+            return true;
+        }
+        return false;
+    }
+
+    protected onDragEnd(button: number): boolean {
+        if (this.toolManager.onDragEnd(this.input, button)) {
             this.render();
             return true;
         }
