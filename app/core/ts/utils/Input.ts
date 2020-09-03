@@ -80,14 +80,6 @@ export class Input {
     }
 
     private hookupMouseEvents(): void {
-        // Mouse events
-        // Object.keys(window).forEach(key => {
-        //     if(/./.test(key) && key != "onpointermove" && key != "onmousemove" && key != "onpointerrawupdate"){
-        //         window.addEventListener(key.slice(2), event => {
-        //             console.log(key)
-        //         })
-        //     }
-        // })
         this.canvas.addEventListener("click",      (e: MouseEvent) => this.onClick(V(e.clientX, e.clientY), e.button), false);
         this.canvas.addEventListener("dblclick",   (e: MouseEvent) => this.onDoubleClick(e.button), false);
         this.canvas.addEventListener("wheel",      (e: WheelEvent) => this.onScroll(e.deltaY), false);
@@ -213,14 +205,12 @@ export class Input {
     }
 
     protected onClick(_: Vector, button: number = LEFT_MOUSE_BUTTON): void {
-        console.log("ON CLICK");
         // Don't call onclick if was dragging
         if (this.isDragging) {
             this.isDragging = false;
             this.callListeners("dragend", button);
             return;
         }
-        console.log("ON CLICK YES");
 
         // call each listener
         this.callListeners("click", button);
@@ -242,7 +232,6 @@ export class Input {
     }
 
     protected onMouseDown(pos: Vector, button: number = 0): void {
-        console.log("mouse down!");
         const rect = this.canvas.getBoundingClientRect();
 
         this.touchCount++;
@@ -259,7 +248,6 @@ export class Input {
         this.callListeners("mousedown", button);
     }
     protected onMouseMove(pos: Vector): void {
-        console.log("mouse move!");
         const rect = this.canvas.getBoundingClientRect();
 
         // get raw and relative mouse positions
