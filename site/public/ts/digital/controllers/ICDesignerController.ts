@@ -183,8 +183,8 @@ export class ICDesignerController extends DesignerController {
                 } else {
                     const size = this.ic.getSize();
                     const p = GetNearestPointOnRect(size.scale(-0.5), size.scale(0.5), worldMousePos);
-                    const v = p.sub(worldMousePos).normalize().scale(size.scale(0.5).sub(V(IO_PORT_LENGTH+size.x/2-25,
-                                                                                           IO_PORT_LENGTH+size.y/2-25))).add(p);
+                    const v = p.sub(worldMousePos).normalize().scale(size.scale(0.5).sub(V(IO_PORT_LENGTH+size.x/2,
+                                                                                           IO_PORT_LENGTH+size.y/2))).add(p);
 
                     // Set port for IC
                     this.dragPort.setOriginPos(p);
