@@ -7,13 +7,31 @@ export const Images = (() => {
                               "switchUp.svg", "switchDown.svg",
                               "led.svg", "ledLight.svg",
                               "buf.svg", "and.svg", "or.svg",
-                              "segment_horizontal.svg",
-                              "segment_vertical.svg",
-                              "segment_horizontal0.5.svg",
-                              "segment_diagonaltr.svg",
-                              "segment_diagonaltl.svg",
-                              "segment_diagonalbr.svg",
-                              "segment_diagonalbl.svg",
+
+                              "segments/off/horizontal.svg",
+                              "segments/off/vertical.svg",
+                              "segments/off/horizontal0.5.svg",
+                              "segments/off/diagonaltr.svg",
+                              "segments/off/diagonaltl.svg",
+                              "segments/off/diagonalbr.svg",
+                              "segments/off/diagonalbl.svg",
+
+                              "segments/on/horizontal.svg",
+                              "segments/on/vertical.svg",
+                              "segments/on/horizontal0.5.svg",
+                              "segments/on/diagonaltr.svg",
+                              "segments/on/diagonaltl.svg",
+                              "segments/on/diagonalbr.svg",
+                              "segments/on/diagonalbl.svg",
+
+                              "segments/selected/horizontal.svg",
+                              "segments/selected/vertical.svg",
+                              "segments/selected/horizontal0.5.svg",
+                              "segments/selected/diagonaltr.svg",
+                              "segments/selected/diagonaltl.svg",
+                              "segments/selected/diagonalbr.svg",
+                              "segments/selected/diagonalbl.svg",
+
                               "clock.svg", "clockOn.svg",
                               "keyboard.svg", "base.svg"];
 

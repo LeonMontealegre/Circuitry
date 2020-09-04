@@ -43,11 +43,9 @@ export const SegmentDisplayRenderer = (() => {
                 const type = segments[i][1];
                 const on  = display.getInputPort(i).getIsOn();
 
-                const col = (on ? DEFAULT_ON_COLOR : (selected ? SELECTED_FILL_COLOR : DEFAULT_FILL_COLOR));
-
-                const img = Images.GetImage(`segment_${type}.svg`);
+                const img = Images.GetImage(`segments/${on ? "on" : (selected ? "selected" : "off")}/${type}.svg`);
                 const size = V(img.width, img.height).scale(0.1);
-                renderer.image(img, pos, size, col);
+                renderer.image(img, pos, size);
             }
         }
     };

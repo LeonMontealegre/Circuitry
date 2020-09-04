@@ -14,6 +14,9 @@ export const WIRE_NEWTON_ITERATIONS = 5;
 
 export const DEFAULT_SIZE = 50;
 export const GRID_SIZE    = 50;
+
+// - If changing SELECTED_FILL_COLOR or DEFAULT_ON_COLOR
+//   make sure to also change img/items/segments/(selected|on)
 export const DEFAULT_FILL_COLOR    = (DEBUG_NO_FILL ? undefined : "#ffffff");
 export const DEFAULT_BORDER_COLOR  = "#000000";
 export const DEFAULT_ON_COLOR      = "#3cacf2";
