@@ -11,6 +11,8 @@ import {DigitalWire} from "digital/models/DigitalWire";
 import {DigitalObjectSet} from "digital/utils/ComponentUtils";
 import {IOObject} from "core/models/IOObject";
 
+import {ExpressionToCircuit} from "digital/utils/ExpressionParser";
+
 /* Notes for connecting components
     const designer = new DigitalCircuitDesigner(0)
     const a = new Switch(), b = new Switch(), o = new LED(), and_gate = new ANDGate();
@@ -29,43 +31,34 @@ import {IOObject} from "core/models/IOObject";
 
     let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3])
 */
+describe("Expression Parser", () => {
+    describe("Single Input", () => {
+        describe("Parse: 'a'", () => {
+            const designer = new DigitalCircuitDesigner(0);
+            const a = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
 
-describe("Trevor Test", () => {
+            const objectSet = ExpressionToCircuit(inputMap, "a", o);
+            designer.addGroup(objectSet)
 
-      const designer = new DigitalCircuitDesigner(0)
-      const a = new Switch(), b = new Switch(), o = new LED(), and_gate = new ANDGate();
-      const w1 = new DigitalWire(a.getOutputPort(0), and_gate.getInputPort(0))
-      const w2 = new DigitalWire(b.getOutputPort(0), and_gate.getInputPort(1))
-      const w3 = new DigitalWire(and_gate.getOutputPort(0), o.getInputPort(0))
+            test("Initial State", () => {
+                expect(o.isOn()).toBe(false);
+            });
+            test("Input on", () => {
+                a.activate(true);
 
-      a.getOutputPort(0).connect(w1)
-      and_gate.getInputPort(0).connect(w1)
+                expect(o.isOn()).toBe(true);
+            });
+            test("Input off", () => {
+                a.activate(false);
 
-      b.getOutputPort(0).connect(w2)
-      and_gate.getInputPort(1).connect(w2)
+                expect(o.isOn()).toBe(false);
+            });
+        });
+    
+    
 
-      and_gate.getOutputPort(0).connect(w3)
-      o.getInputPort(0).connect(w3)
-
-      let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3])
-      designer.addGroup(objectSet)
-
-    test("Test1", () => {
-        expect(o.isOn()).toBe(false);
-    });
-
-    test("Test2", () => {
-        a.activate(true);
-        expect(o.isOn()).toBe(false);
-    });
-
-    test("Test3", () => {
-        b.activate(true);
-        expect(o.isOn()).toBe(true);
-    });
-
-    test("Test4", () => {
-        a.activate(false);
-        expect(o.isOn()).toBe(false);
     });
 });
