@@ -1,5 +1,6 @@
 import {DigitalComponent} from "digital/models/index";
 import {DigitalObjectSet} from "digital/utils/ComponentUtils";
+import {OutputPort} from "digital/models/ports/OutputPort";
 
 
 /* Notes for connecting components
@@ -21,7 +22,7 @@ import {DigitalObjectSet} from "digital/utils/ComponentUtils";
     let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3])
 */
 
-function GenerateTokens(input: string): Array<string> {
+function GenerateTokens(input: string): Array<string> | null {
     if(input == null) return null;
     let tokenList = new Array<string>();
     let buffer: string = "";
@@ -59,7 +60,13 @@ function GenerateTokens(input: string): Array<string> {
     }
 
     return tokenList;
-}
+};
+
+function ParseExpr(tokens: Array<string>, index: bigint, inputs: Map<string, DigitalComponent>):
+    { circuit: DigitalObjectSet; retIndex: bigint; recentPort: OutputPort } | null {
+    return null;
+};
+
 
 /**
  * Main driver function for parsing an expression into a circuit
@@ -79,7 +86,7 @@ function GenerateTokens(input: string): Array<string> {
  */
 export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
                                     expression: string,
-                                    output: DigitalComponent): DigitalObjectSet {
+                                    output: DigitalComponent): DigitalObjectSet | null {
     if(inputs == null)  throw new Error("Null Parameter: inputs");
     if(expression == null) throw new Error("Null Parameter: expression");
     if(output == null) throw new Error("Null Parameter: output");
