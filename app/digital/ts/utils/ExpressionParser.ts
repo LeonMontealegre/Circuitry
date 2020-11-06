@@ -1,26 +1,38 @@
+import {IOObject} from "core/models/IOObject";
 import {DigitalComponent} from "digital/models/index";
 import {DigitalObjectSet} from "digital/utils/ComponentUtils";
 import {OutputPort} from "digital/models/ports/OutputPort";
+import {ANDGate} from "digital/models/ioobjects/gates/ANDGate";
+import {ORGate} from "digital/models/ioobjects/gates/ORGate";
+import {NOTGate} from "digital/models/ioobjects/gates/BUFGate";
+import {XORGate} from "digital/models/ioobjects/gates/XORGate";
+import {DigitalWire} from "digital/models/DigitalWire";
 
 
 /* Notes for connecting components
-    const designer = new DigitalCircuitDesigner(0)
+    const designer = new DigitalCircuitDesigner(0);
     const a = new Switch(), b = new Switch(), o = new LED(), and_gate = new ANDGate();
-    const w1 = new DigitalWire(a.getOutputPort(0), and_gate.getInputPort(0))
-    const w2 = new DigitalWire(b.getOutputPort(0), and_gate.getInputPort(1))
-    const w3 = new DigitalWire(and_gate.getOutputPort(0), o.getInputPort(0))
+    const w1 = new DigitalWire(a.getOutputPort(0), and_gate.getInputPort(0));
+    const w2 = new DigitalWire(b.getOutputPort(0), and_gate.getInputPort(1));
+    const w3 = new DigitalWire(and_gate.getOutputPort(0), o.getInputPort(0));
 
-    a.getOutputPort(0).connect(w1)
-    and_gate.getInputPort(0).connect(w1)
+    a.getOutputPort(0).connect(w1);
+    and_gate.getInputPort(0).connect(w1);
 
-    b.getOutputPort(0).connect(w2)
-    and_gate.getInputPort(1).connect(w2)
+    b.getOutputPort(0).connect(w2);
+    and_gate.getInputPort(1).connect(w2);
 
-    and_gate.getOutputPort(0).connect(w3)
-    o.getInputPort(0).connect(w3)
+    and_gate.getOutputPort(0).connect(w3);
+    o.getInputPort(0).connect(w3);
 
-    let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3])
+    let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3]);
 */
+
+interface ReturnValue {
+    circuit: DigitalObjectSet;
+    retIndex: number;
+    recentPort: OutputPort;
+}
 
 function GenerateTokens(input: string): Array<string> | null {
     if(input == null) return null;
@@ -62,8 +74,64 @@ function GenerateTokens(input: string): Array<string> | null {
     return tokenList;
 }
 
-function ParseExpr(tokens: Array<string>, index: bigint, inputs: Map<string, DigitalComponent>):
-{ circuit: DigitalObjectSet, retIndex: bigint, recentPort: OutputPort } | null {
+function Expr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
+    return OrExpr(tokens, index, inputs);
+}
+
+function OrExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
+    const leftRet = XorExpr(tokens, index, inputs);
+    index = leftRet.retIndex;
+    if(index >= tokens.length || tokens[index] != "^") {
+        return leftRet;
+    }
+    index += 1;
+    if(index >= tokens.length) {
+        throw new Error("Missing Right Operand: |");
+    }
+
+    const leftCircuit = leftRet.circuit;
+    const leftOutput = leftRet.recentPort;
+
+    const rightRet = OrExpr(tokens, index, inputs);
+    const rightCircuit = rightRet.circuit;
+    index = rightRet.retIndex;
+    const rightOutput = rightRet.recentPort;
+
+    const orGate = new ORGate();
+    const w1 = new DigitalWire(leftOutput, orGate.getInputPort(0));
+    const w2 = new DigitalWire(rightOutput, orGate.getInputPort(1));
+    leftOutput.connect(w1);
+    orGate.getInputPort(0).connect(w1);
+    rightOutput.connect(w2);
+    orGate.getInputPort(1).connect(w2);
+    const newOutput = orGate.getOutputPort(0);
+
+    const newComponents: IOObject[] = [orGate, w1, w2];
+    const newCircuit = new DigitalObjectSet(newComponents.concat(
+        leftCircuit.toList()).concat(rightCircuit.toList()));
+
+    return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+}
+
+function XorExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
+    return null;
+}
+
+function AndExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
+    return null;
+}
+
+function NotExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
+    return null;
+}
+
+function ParenExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
+ReturnValue | null {
     return null;
 }
 
