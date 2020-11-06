@@ -24,34 +24,34 @@ import {OutputPort} from "digital/models/ports/OutputPort";
 
 function GenerateTokens(input: string): Array<string> | null {
     if(input == null) return null;
-    let tokenList = new Array<string>();
-    let buffer: string = "";
+    const tokenList = new Array<string>();
+    let buffer = "";
     let c: string;
 
     for(let i = 0; i < input.length; i++) {
         c = input[i];
         switch(c) {
-            case ' ':
-                if(buffer.length > 0) {
-                    tokenList.push(buffer);
-                    buffer = "";
-                }
-                break;
-            case '(':
-            case ')':
-            case '&':
-            case '^':
-            case '|':
-            case '!':
-                if(buffer.length > 0) {
-                    tokenList.push(buffer);
-                    buffer = "";
-                }
-                tokenList.push(c);
-                break;
-            default:
-                buffer += c;
-                break;
+        case " ":
+            if(buffer.length > 0) {
+                tokenList.push(buffer);
+                buffer = "";
+            }
+            break;
+        case "(":
+        case ")":
+        case "&":
+        case "^":
+        case "|":
+        case "!":
+            if(buffer.length > 0) {
+                tokenList.push(buffer);
+                buffer = "";
+            }
+            tokenList.push(c);
+            break;
+        default:
+            buffer += c;
+            break;
         }
     }
 
@@ -60,12 +60,12 @@ function GenerateTokens(input: string): Array<string> | null {
     }
 
     return tokenList;
-};
+}
 
 function ParseExpr(tokens: Array<string>, index: bigint, inputs: Map<string, DigitalComponent>):
-    { circuit: DigitalObjectSet; retIndex: bigint; recentPort: OutputPort } | null {
+{ circuit: DigitalObjectSet, retIndex: bigint, recentPort: OutputPort } | null {
     return null;
-};
+}
 
 
 /**
@@ -91,7 +91,7 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     if(expression == null) throw new Error("Null Parameter: expression");
     if(output == null) throw new Error("Null Parameter: output");
 
-    for(let [name, component] of inputs) {
+    for(const [name, component] of inputs) {
         if(component.getInputPortCount().getValue() != 0
           || component.getOutputPortCount().getValue() == 0) {
             throw new Error("Not An Input: " + name);
@@ -103,22 +103,22 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
         throw new Error("Supplied Output Is Not An Output");
     }
 
-    let tokenList = GenerateTokens(expression);
+    const tokenList = GenerateTokens(expression);
     let token: string;
     for(let i = 0; i < tokenList.length; i++) {
         token = tokenList[i];
         switch(token) {
-            case '(':
-            case ')':
-            case '&':
-            case '^':
-            case '|':
-            case '!':
-                break;
-            default:
-                if(!inputs.has(token))
-                    throw new Error("Input Not Found: " + token);
-                break;
+        case "(":
+        case ")":
+        case "&":
+        case "^":
+        case "|":
+        case "!":
+            break;
+        default:
+            if(!inputs.has(token))
+                throw new Error("Input Not Found: " + token);
+            break;
         }
     }
 
