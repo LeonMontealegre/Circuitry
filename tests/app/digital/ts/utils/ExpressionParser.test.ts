@@ -33,17 +33,6 @@ describe("Expression Parser", () => {
             }).toThrow("Null Parameter: output");
         });
 
-        test("Input Not Found", () => {
-            const a = new Switch(), b = new Switch(), o = new LED();
-            const inputMap = new Map([
-                ["a", a]
-            ]);
-
-            expect(() => {
-                ExpressionToCircuit(inputMap,"a|b",o);
-            }).toThrow("Input Not Found: b");
-        });
-
         test("Not An Input", () => {
             const a = new LED(), b = new ORGate(), o1 = new LED(), o2 = new LED();
             const inputMap1 = new Map([
@@ -76,6 +65,17 @@ describe("Expression Parser", () => {
             expect(() => {
                 ExpressionToCircuit(inputMap,"a|b",o2);
             }).toThrow("Supplied Output Is Not An Output");
+        });
+
+        test("Input Not Found", () => {
+            const a = new Switch(), b = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
+
+            expect(() => {
+                ExpressionToCircuit(inputMap,"a|b",o);
+            }).toThrow("Input Not Found: b");
         });
 
         test("Unmatched '(' and ')'", () => {
