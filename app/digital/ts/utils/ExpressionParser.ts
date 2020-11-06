@@ -1,6 +1,66 @@
 import {DigitalComponent} from "digital/models/index";
 import {DigitalObjectSet} from "digital/utils/ComponentUtils";
 
+
+/* Notes for connecting components
+    const designer = new DigitalCircuitDesigner(0)
+    const a = new Switch(), b = new Switch(), o = new LED(), and_gate = new ANDGate();
+    const w1 = new DigitalWire(a.getOutputPort(0), and_gate.getInputPort(0))
+    const w2 = new DigitalWire(b.getOutputPort(0), and_gate.getInputPort(1))
+    const w3 = new DigitalWire(and_gate.getOutputPort(0), o.getInputPort(0))
+
+    a.getOutputPort(0).connect(w1)
+    and_gate.getInputPort(0).connect(w1)
+
+    b.getOutputPort(0).connect(w2)
+    and_gate.getInputPort(1).connect(w2)
+
+    and_gate.getOutputPort(0).connect(w3)
+    o.getInputPort(0).connect(w3)
+
+    let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3])
+*/
+
+function GenerateTokens(input: string): Array<string> {
+    if(input == null) return null;
+    let tokenList = new Array<string>();
+    let buffer: string = "";
+    let c: string;
+
+    for(let i = 0; i < input.length; i++) {
+        c = input[i];
+        switch(c) {
+            case ' ':
+                if(buffer.length > 0) {
+                    tokenList.push(buffer);
+                    buffer = "";
+                }
+                break;
+            case '(':
+            case ')':
+            case '&':
+            case '^':
+            case '|':
+            case '!':
+                if(buffer.length > 0) {
+                    tokenList.push(buffer);
+                    buffer = "";
+                }
+                tokenList.push(c);
+                break;
+            default:
+                buffer += c;
+                break;
+        }
+    }
+
+    if(buffer.length > 0) {
+        tokenList.push(buffer);
+    }
+
+    return tokenList;
+}
+
 /**
  * Main driver function for parsing an expression into a circuit
  *
@@ -36,5 +96,28 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
         throw new Error("Supplied Output Is Not An Output");
     }
 
-    return new DigitalObjectSet()
+    let tokenList = GenerateTokens(expression);
+    let token: string;
+    for(let i = 0; i < tokenList.length; i++) {
+        token = tokenList[i];
+        switch(token) {
+            case '(':
+            case ')':
+            case '&':
+            case '^':
+            case '|':
+            case '!':
+                break;
+            default:
+                if(!inputs.has(token))
+                    throw new Error("Input Not Found: " + token);
+                break;
+        }
+    }
+
+    if(inputs.size == 0) {
+        return new DigitalObjectSet();
+    }
+
+    return new DigitalObjectSet();
 }
