@@ -87,11 +87,15 @@ describe("Expression Parser", () => {
 
             expect(() => {
                 ExpressionToCircuit(inputMap,"(a|b",o);
-            }).toThrow("Encountered Unmatched '('");
+            }).toThrow("Encountered Unmatched (");
+            expect(() => {
+                ExpressionToCircuit(inputMap,"((a|b)",o);
+            }).toThrow("Encountered Unmatched (");
+
 
             expect(() => {
-                ExpressionToCircuit(inputMap,"a|b)",o);
-            }).toThrow("Encountered Unmatched ')'");
+                ExpressionToCircuit(inputMap,"(a|b))",o);
+            }).toThrow("Encountered Unmatched )");
         });
 
         test("Missing Operands", () => {
@@ -325,6 +329,8 @@ describe("Expression Parser", () => {
 
             const objectSet = ExpressionToCircuit(inputMap, "!!a", o);
             designer.addGroup(objectSet);
+
+            console.log(objectSet.toList());
 
             test("Initial State", () => {
                 expect(o.isOn()).toBe(false);
@@ -954,7 +960,7 @@ describe("Expression Parser", () => {
                 b.activate(false);
                 c.activate(true);
 
-                expect(o.isOn()).toBe(false);
+                expect(o.isOn()).toBe(true);
             });
             test("Input a,b,c on", () => {
                 b.activate(true);
@@ -1013,7 +1019,7 @@ describe("Expression Parser", () => {
                 b.activate(false);
                 c.activate(true);
 
-                expect(o.isOn()).toBe(false);
+                expect(o.isOn()).toBe(true);
             });
             test("Input a,b,c on", () => {
                 b.activate(true);
