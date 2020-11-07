@@ -77,17 +77,17 @@ function GenerateTokens(input: string): Array<string> | null {
 function Parse(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>,
                currentOperator: string): ReturnValue | null {
 
-    if(currentOperator == "&" || currentOperator == "^" || currentOperator == "|") {
+    if(currentOperator == "|" || currentOperator == "^" || currentOperator == "&") {
         let nextOperator: string;
 
         switch(currentOperator) {
-        case "&":
+        case "|":
             nextOperator = "^";
             break;
         case "^":
-            nextOperator = "|";
+            nextOperator = "&";
             break;
-        case "|":
+        case "&":
             nextOperator = "!";
             break;
         }
@@ -168,8 +168,10 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
             index += 1;
             const ret = Parse(tokens, index, inputs, "|");
             index = ret.retIndex;
-            if(index >= tokens.length || tokens[index] != ")")
+            if(index >= tokens.length)
                 throw new Error("Encountered Unmatched (");
+            if(tokens[index] != ")")
+                throw new Error("Encountered Unmatched (, unkown "+tokens[index]);
             return ret;
         }
         else {
