@@ -341,6 +341,106 @@ describe("Expression Parser", () => {
             });
         });
 
+        describe("Parse: 'a&a'", () => {
+            const designer = new DigitalCircuitDesigner(0);
+            const a = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
+
+            const objectSet = ExpressionToCircuit(inputMap, "a&a", o);
+            designer.addGroup(objectSet);
+
+            test("Initial State", () => {
+                expect(o.isOn()).toBe(false);
+            });
+            test("Input on", () => {
+                a.activate(true);
+
+                expect(o.isOn()).toBe(true);
+            });
+            test("Input off", () => {
+                a.activate(false);
+
+                expect(o.isOn()).toBe(false);
+            });
+        });
+
+        describe("Parse: 'a|a'", () => {
+            const designer = new DigitalCircuitDesigner(0);
+            const a = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
+
+            const objectSet = ExpressionToCircuit(inputMap, "a|a", o);
+            designer.addGroup(objectSet);
+
+            test("Initial State", () => {
+                expect(o.isOn()).toBe(false);
+            });
+            test("Input on", () => {
+                a.activate(true);
+
+                expect(o.isOn()).toBe(true);
+            });
+            test("Input off", () => {
+                a.activate(false);
+
+                expect(o.isOn()).toBe(false);
+            });
+        });
+
+        describe("Parse: 'a^a'", () => {
+            const designer = new DigitalCircuitDesigner(0);
+            const a = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
+
+            const objectSet = ExpressionToCircuit(inputMap, "a^a", o);
+            designer.addGroup(objectSet);
+
+            test("Initial State", () => {
+                expect(o.isOn()).toBe(false);
+            });
+            test("Input on", () => {
+                a.activate(true);
+
+                expect(o.isOn()).toBe(false);
+            });
+            test("Input off", () => {
+                a.activate(false);
+
+                expect(o.isOn()).toBe(false);
+            });
+        });
+
+        describe("Parse: 'a^!a'", () => {
+            const designer = new DigitalCircuitDesigner(0);
+            const a = new Switch(), o = new LED();
+            const inputMap = new Map([
+                ["a", a]
+            ]);
+
+            const objectSet = ExpressionToCircuit(inputMap, "a^!a", o);
+            designer.addGroup(objectSet);
+
+            test("Initial State", () => {
+                expect(o.isOn()).toBe(true);
+            });
+            test("Input on", () => {
+                a.activate(true);
+
+                expect(o.isOn()).toBe(true);
+            });
+            test("Input off", () => {
+                a.activate(false);
+
+                expect(o.isOn()).toBe(true);
+            });
+        });
+
         describe("Parse: 'longName'", () => {
             const designer = new DigitalCircuitDesigner(0);
             const a = new Switch(), o = new LED();
