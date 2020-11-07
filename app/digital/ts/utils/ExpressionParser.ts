@@ -74,67 +74,119 @@ function GenerateTokens(input: string): Array<string> | null {
     return tokenList;
 }
 
-function Expr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
-    return OrExpr(tokens, index, inputs);
-}
+function Parse(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>,
+               currentOperator: string): ReturnValue | null {
 
-function OrExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
-    const leftRet = XorExpr(tokens, index, inputs);
-    index = leftRet.retIndex;
-    if(index >= tokens.length || tokens[index] != "^") {
-        return leftRet;
+    if(currentOperator == "&" || currentOperator == "^" || currentOperator == "|") {
+        let nextOperator: string;
+
+        switch(currentOperator) {
+        case "&":
+            nextOperator = "^";
+            break;
+        case "^":
+            nextOperator = "|";
+            break;
+        case "|":
+            nextOperator = "!";
+            break;
+        }
+
+        const leftRet = Parse(tokens, index, inputs, nextOperator);
+        index = leftRet.retIndex;
+        if(index >= tokens.length || tokens[index] != currentOperator) {
+            return leftRet;
+        }
+        index += 1;
+        if(index >= tokens.length) {
+            throw new Error("Missing Right Operand: |");
+        }
+
+        const leftCircuit = leftRet.circuit;
+        const leftPort = leftRet.recentPort;
+        const rightRet = Parse(tokens, index, inputs, currentOperator);
+        const rightCircuit = rightRet.circuit;
+        index = rightRet.retIndex;
+        const rightPort = rightRet.recentPort;
+
+        let newGate: DigitalComponent;
+        switch(currentOperator) {
+        case "&":
+            newGate = new ANDGate();
+            break;
+        case "^":
+            newGate = new XORGate();
+            break;
+        case "|":
+            newGate = new ORGate();
+            break;
+        }
+        const w1 = new DigitalWire(leftPort, newGate.getInputPort(0));
+        const w2 = new DigitalWire(rightPort, newGate.getInputPort(1));
+        leftPort.connect(w1);
+        newGate.getInputPort(0).connect(w1);
+        rightPort.connect(w2);
+        newGate.getInputPort(1).connect(w2);
+        const newOutput = newGate.getOutputPort(0);
+        const newComponents: IOObject[] = [newGate, w1, w2];
+        const newCircuit = new DigitalObjectSet(newComponents.concat(
+            leftCircuit.toList()).concat(rightCircuit.toList()));
+
+        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
     }
-    index += 1;
-    if(index >= tokens.length) {
-        throw new Error("Missing Right Operand: |");
+    else if(currentOperator == "!") {
+        if(tokens[index] != "!") {
+            return Parse(tokens, index, inputs, "(");
+        }
+        index += 1;
+        if(index >= tokens.length) {
+            throw new Error("Missing Operand: !");
+        }
+
+        let ret: ReturnValue;
+        if(tokens[index] == "!") {
+            ret = Parse(tokens, index, inputs, "!");
+        }
+        else {
+            ret = Parse(tokens, index, inputs, "(");
+        }
+        const circuit = ret.circuit;
+        index = ret.retIndex;
+        const port = ret.recentPort;
+        const gate = new NOTGate();
+        const wire = new DigitalWire(port, gate.getInputPort(0));
+        port.connect(wire);
+        gate.getInputPort(0).connect(wire);
+        const newOutput = gate.getOutputPort(0);
+        const newComponents: IOObject[] = [gate, wire];
+        const newCircuit = new DigitalObjectSet(circuit.toList().concat(newComponents));
+
+        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+    }
+    else if(currentOperator == "(")  {
+        if(tokens[index] == "(") {
+            index += 1;
+            const ret = Parse(tokens, index, inputs, "|");
+            index = ret.retIndex;
+            if(index >= tokens.length || tokens[index] != ")")
+                throw new Error("Encountered Unmatched (");
+            return ret;
+        }
+        else {
+            const inputName = tokens[index];
+            if(!inputs.has(inputName))
+                throw new Error("Input Not Found: " + inputName);
+            const inputComponent = inputs.get(inputName);
+            const newOutput = inputComponent.getOutputPort(0);
+            const newCircuit = new DigitalObjectSet();
+            index += 1;
+
+            return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+        }
     }
 
-    const leftCircuit = leftRet.circuit;
-    const leftOutput = leftRet.recentPort;
-
-    const rightRet = OrExpr(tokens, index, inputs);
-    const rightCircuit = rightRet.circuit;
-    index = rightRet.retIndex;
-    const rightOutput = rightRet.recentPort;
-
-    const orGate = new ORGate();
-    const w1 = new DigitalWire(leftOutput, orGate.getInputPort(0));
-    const w2 = new DigitalWire(rightOutput, orGate.getInputPort(1));
-    leftOutput.connect(w1);
-    orGate.getInputPort(0).connect(w1);
-    rightOutput.connect(w2);
-    orGate.getInputPort(1).connect(w2);
-    const newOutput = orGate.getOutputPort(0);
-
-    const newComponents: IOObject[] = [orGate, w1, w2];
-    const newCircuit = new DigitalObjectSet(newComponents.concat(
-        leftCircuit.toList()).concat(rightCircuit.toList()));
-
-    return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
-}
-
-function XorExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
     return null;
 }
-
-function AndExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
-    return null;
-}
-
-function NotExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
-    return null;
-}
-
-function ParenExpr(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>):
-ReturnValue | null {
-    return null;
-}
-
 
 /**
  * Main driver function for parsing an expression into a circuit
@@ -159,11 +211,13 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     if(expression == null) throw new Error("Null Parameter: expression");
     if(output == null) throw new Error("Null Parameter: output");
 
+    let components: IOObject[] = [];
     for(const [name, component] of inputs) {
         if(component.getInputPortCount().getValue() != 0
           || component.getOutputPortCount().getValue() == 0) {
             throw new Error("Not An Input: " + name);
         }
+        components.push(component);
     }
 
     if(output.getInputPortCount().getValue() == 0
@@ -194,5 +248,14 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
         return new DigitalObjectSet();
     }
 
-    return new DigitalObjectSet();
+    const parseRet = Parse(tokenList, 0, inputs, "|");
+    const circuit = parseRet.circuit;
+    const outPort = parseRet.recentPort;
+    const wire = new DigitalWire(outPort, output.getInputPort(0));
+    outPort.connect(wire);
+    output.getInputPort(0).connect(wire);
+    components.push(wire);
+    components.push(output);
+
+    return new DigitalObjectSet(circuit.toList().concat(components));
 }
