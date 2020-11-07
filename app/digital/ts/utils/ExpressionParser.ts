@@ -213,7 +213,7 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     if(expression == null) throw new Error("Null Parameter: expression");
     if(output == null) throw new Error("Null Parameter: output");
 
-    let components: IOObject[] = [];
+    const components: IOObject[] = [];
     for(const [name, component] of inputs) {
         if(component.getInputPortCount().getValue() != 0
           || component.getOutputPortCount().getValue() == 0) {
