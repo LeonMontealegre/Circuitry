@@ -86,13 +86,20 @@ describe("Expression Parser", () => {
             ]);
 
             expect(() => {
+                ExpressionToCircuit(inputMap,"(",o);
+            }).toThrow("Encountered Unmatched (");
+            expect(() => {
                 ExpressionToCircuit(inputMap,"(a|b",o);
             }).toThrow("Encountered Unmatched (");
             expect(() => {
                 ExpressionToCircuit(inputMap,"((a|b)",o);
             }).toThrow("Encountered Unmatched (");
-
-
+            expect(() => {
+                ExpressionToCircuit(inputMap,")",o);
+            }).toThrow("Encountered Unmatched )");
+            expect(() => {
+                ExpressionToCircuit(inputMap,"a|b)",o);
+            }).toThrow("Encountered Unmatched )");
             expect(() => {
                 ExpressionToCircuit(inputMap,"(a|b))",o);
             }).toThrow("Encountered Unmatched )");

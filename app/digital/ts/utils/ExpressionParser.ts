@@ -35,7 +35,6 @@ interface ReturnValue {
 }
 
 function GenerateTokens(input: string): Array<string> | null {
-    if(input == null) return null;
     const tokenList = new Array<string>();
     let buffer = "";
     let c: string;
@@ -77,10 +76,7 @@ function GenerateTokens(input: string): Array<string> | null {
 function Parse(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>,
                currentOperator: string): ReturnValue | null {
 
-    if(tokens[index] == ")") {
-        throw new Error("Encountered Unmatched )");
-    }
-    else if(currentOperator == "|" || currentOperator == "^" || currentOperator == "&") {
+    if(currentOperator == "|" || currentOperator == "^" || currentOperator == "&") {
         let nextOperator: string;
 
         switch(currentOperator) {
@@ -165,42 +161,35 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
 
         return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
     }
-    else if(currentOperator == "(")  {
-        if(tokens[index] == "(") {
-            index += 1;
-            const ret = Parse(tokens, index, inputs, "|");
-            index = ret.retIndex;
-            if(index >= tokens.length)
-                throw new Error("Encountered Unmatched (");
-            if(tokens[index] != ")")
-                throw new Error("Encountered Unmatched (, unkown "+tokens[index]);
-            ret.retIndex += 1;
-            return ret;
-        }
-        else {
-            const inputName = tokens[index];
-            if(!inputs.has(inputName)) {
-                switch (inputName) {
-                case "&":
-                case "|":
-                case "^":
-                    throw new Error("Missing Left Operand: " + inputName);
-                    break;
-                default:
-                    throw new Error("Input Not Found: " + inputName);
-                    break;
-                }
-            }
-            const inputComponent = inputs.get(inputName);
-            const newOutput = inputComponent.getOutputPort(0);
-            const newCircuit: IOObject[] = [];
-            index += 1;
-
-            return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
-        }
+    else if(tokens[index] == "(") {
+        index += 1;
+        if(index >= tokens.length)
+            throw new Error("Encountered Unmatched (");
+        const ret = Parse(tokens, index, inputs, "|");
+        index = ret.retIndex;
+        if(index >= tokens.length)
+            throw new Error("Encountered Unmatched (");
+        ret.retIndex += 1;
+        return ret;
     }
-
-    return null;
+    else {
+        const inputName = tokens[index];
+        if(!inputs.has(inputName)) {
+            switch (inputName) {
+            case "&":
+            case "|":
+            case "^":
+                throw new Error("Missing Left Operand: " + inputName);
+            case ")":
+                throw new Error("Encountered Unmatched )");
+            }
+        }
+        const inputComponent = inputs.get(inputName);
+        const newOutput = inputComponent.getOutputPort(0);
+        const newCircuit: IOObject[] = [];
+        index += 1;
+        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+    }
 }
 
 /**
@@ -265,14 +254,8 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
 
     const parseRet = Parse(tokenList, 0, inputs, "|");
     const index = parseRet.retIndex;
-    if(index > tokenList.length) {
-        throw new Error("Returned index from parser is greater than the length of the token list, this shouldn't happen");
-    }
-    else if(index < tokenList.length) {
-        if(tokenList[index] == ")") {
-            throw new Error("Encountered Unmatched )");
-        }
-        throw new Error("Parse ended prematurely, everything after " + tokenList[index] + " was not properly parsed");
+    if(index < tokenList.length && tokenList[index] == ")") {
+        throw new Error("Encountered Unmatched )");
     }
     const circuit = parseRet.circuit;
     const outPort = parseRet.recentPort;
@@ -282,7 +265,5 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     components.push(wire);
     components.push(output);
 
-    return new DigitalObjectSet(circuit.toList().concat(components));
-    const objectSet = new DigitalObjectSet(circuit.concat(components));
-    return objectSet;
+    return new DigitalObjectSet(circuit.concat(components));
 }
