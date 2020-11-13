@@ -29,7 +29,7 @@ import {DigitalWire} from "digital/models/DigitalWire";
 */
 
 interface ReturnValue {
-    circuit: DigitalObjectSet;
+    circuit: IOObject[];
     retIndex: number;
     recentPort: OutputPort;
 }
@@ -132,8 +132,7 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         newGate.getInputPort(1).connect(w2);
         const newOutput = newGate.getOutputPort(0);
         const newComponents: IOObject[] = [newGate, w1, w2];
-        const newCircuit = new DigitalObjectSet(newComponents.concat(
-            leftCircuit.toList()).concat(rightCircuit.toList()));
+        const newCircuit = newComponents.concat(leftCircuit).concat(rightCircuit);
 
         return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
     }
@@ -162,7 +161,7 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         port.connect(wire);
         const newOutput = gate.getOutputPort(0);
         const newComponents: IOObject[] = [gate, wire];
-        const newCircuit = new DigitalObjectSet(circuit.toList().concat(newComponents));
+        const newCircuit = circuit.concat(newComponents);
 
         return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
     }
@@ -194,7 +193,7 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
             }
             const inputComponent = inputs.get(inputName);
             const newOutput = inputComponent.getOutputPort(0);
-            const newCircuit = new DigitalObjectSet();
+            const newCircuit: IOObject[] = [];
             index += 1;
 
             return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
@@ -284,4 +283,6 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     components.push(output);
 
     return new DigitalObjectSet(circuit.toList().concat(components));
+    const objectSet = new DigitalObjectSet(circuit.concat(components));
+    return objectSet;
 }
