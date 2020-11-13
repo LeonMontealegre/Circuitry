@@ -77,7 +77,10 @@ function GenerateTokens(input: string): Array<string> | null {
 function Parse(tokens: Array<string>, index: number, inputs: Map<string, DigitalComponent>,
                currentOperator: string): ReturnValue | null {
 
-    if(currentOperator == "|" || currentOperator == "^" || currentOperator == "&") {
+    if(tokens[index] == ")") {
+        throw new Error("Encountered Unmatched )");
+    }
+    else if(currentOperator == "|" || currentOperator == "^" || currentOperator == "&") {
         let nextOperator: string;
 
         switch(currentOperator) {
@@ -172,20 +175,21 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
                 throw new Error("Encountered Unmatched (");
             if(tokens[index] != ")")
                 throw new Error("Encountered Unmatched (, unkown "+tokens[index]);
+            ret.retIndex += 1;
             return ret;
         }
         else {
             const inputName = tokens[index];
             if(!inputs.has(inputName)) {
                 switch (inputName) {
-                    case "&":
-                    case "|":
-                    case "^":
-                        throw new Error("Missing Left Operand: " + inputName);
-                        break;
-                    default:
-                        throw new Error("Input Not Found: " + inputName);
-                        break;
+                case "&":
+                case "|":
+                case "^":
+                    throw new Error("Missing Left Operand: " + inputName);
+                    break;
+                default:
+                    throw new Error("Input Not Found: " + inputName);
+                    break;
                 }
             }
             const inputComponent = inputs.get(inputName);
@@ -261,6 +265,16 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     }
 
     const parseRet = Parse(tokenList, 0, inputs, "|");
+    const index = parseRet.retIndex;
+    if(index > tokenList.length) {
+        throw new Error("Returned index from parser is greater than the length of the token list, this shouldn't happen");
+    }
+    else if(index < tokenList.length) {
+        if(tokenList[index] == ")") {
+            throw new Error("Encountered Unmatched )");
+        }
+        throw new Error("Parse ended prematurely, everything after " + tokenList[index] + " was not properly parsed");
+    }
     const circuit = parseRet.circuit;
     const outPort = parseRet.recentPort;
     const wire = new DigitalWire(outPort, output.getInputPort(0));
