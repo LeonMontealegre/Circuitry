@@ -99,7 +99,7 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         }
         index += 1;
         if(index >= tokens.length) {
-            throw new Error("Missing Right Operand: |");
+            throw new Error("Missing Right Operand: " + currentOperator);
         }
 
         const leftCircuit = leftRet.circuit;
@@ -155,8 +155,8 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         const port = ret.recentPort;
         const gate = new NOTGate();
         const wire = new DigitalWire(port, gate.getInputPort(0));
-        port.connect(wire);
         gate.getInputPort(0).connect(wire);
+        port.connect(wire);
         const newOutput = gate.getOutputPort(0);
         const newComponents: IOObject[] = [gate, wire];
         const newCircuit = new DigitalObjectSet(circuit.toList().concat(newComponents));
@@ -176,8 +176,18 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         }
         else {
             const inputName = tokens[index];
-            if(!inputs.has(inputName))
-                throw new Error("Input Not Found: " + inputName);
+            if(!inputs.has(inputName)) {
+                switch (inputName) {
+                    case "&":
+                    case "|":
+                    case "^":
+                        throw new Error("Missing Left Operand: " + inputName);
+                        break;
+                    default:
+                        throw new Error("Input Not Found: " + inputName);
+                        break;
+                }
+            }
             const inputComponent = inputs.get(inputName);
             const newOutput = inputComponent.getOutputPort(0);
             const newCircuit = new DigitalObjectSet();
