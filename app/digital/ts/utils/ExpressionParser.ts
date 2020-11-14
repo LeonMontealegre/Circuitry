@@ -1,12 +1,12 @@
 import {IOObject} from "core/models/IOObject";
 import {DigitalComponent} from "digital/models/index";
 import {DigitalObjectSet} from "digital/utils/ComponentUtils";
+import {InputPort} from "digital/models/ports/InputPort";
 import {OutputPort} from "digital/models/ports/OutputPort";
 import {ANDGate} from "digital/models/ioobjects/gates/ANDGate";
 import {ORGate} from "digital/models/ioobjects/gates/ORGate";
 import {NOTGate} from "digital/models/ioobjects/gates/BUFGate";
 import {XORGate} from "digital/models/ioobjects/gates/XORGate";
-import {DigitalWire} from "digital/models/DigitalWire";
 
 
 /* Notes for connecting components
@@ -28,10 +28,19 @@ import {DigitalWire} from "digital/models/DigitalWire";
     let objectSet = new DigitalObjectSet([a, b, o, and_gate, w1, w2, w3]);
 */
 
+//inputList[i] will need to be connected to outputList[i]
+interface ExpressionToCircuitReturn {
+    components: DigitalObjectSet;
+    inputList: InputPort[];
+    outputList: OutputPort[];
+}
+
 interface ReturnValue {
     circuit: IOObject[];
     retIndex: number;
     recentPort: OutputPort;
+    inputList: InputPort[];
+    outputList: OutputPort[];
 }
 
 function GenerateTokens(input: string): Array<string> | null {
@@ -120,17 +129,18 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
             newGate = new ORGate();
             break;
         }
-        const w1 = new DigitalWire(leftPort, newGate.getInputPort(0));
-        const w2 = new DigitalWire(rightPort, newGate.getInputPort(1));
-        leftPort.connect(w1);
-        newGate.getInputPort(0).connect(w1);
-        rightPort.connect(w2);
-        newGate.getInputPort(1).connect(w2);
+        const newInputList = leftRet.inputList.concat(rightRet.inputList);
+        const newOutputList = rightRet.outputList.concat(rightRet.outputList)
+        newInputList.push(newGate.getInputPort(0));
+        newInputList.push(newGate.getInputPort(1));
+        newOutputList.push(leftPort);
+        newOutputList.push(rightPort);
         const newOutput = newGate.getOutputPort(0);
-        const newComponents: IOObject[] = [newGate, w1, w2];
-        const newCircuit = newComponents.concat(leftCircuit).concat(rightCircuit);
+        const newCircuit = leftCircuit.concat(rightCircuit);
+        newCircuit.push(newGate);
 
-        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+        return {circuit: newCircuit, retIndex: index, recentPort: newOutput,
+            inputList: newInputList, outputList: newOutputList};
     }
     else if(currentOperator == "!") {
         if(tokens[index] != "!") {
@@ -152,14 +162,15 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         index = ret.retIndex;
         const port = ret.recentPort;
         const gate = new NOTGate();
-        const wire = new DigitalWire(port, gate.getInputPort(0));
-        gate.getInputPort(0).connect(wire);
-        port.connect(wire);
+        const newInputList = ret.inputList;
+        const newOutputList = ret.outputList;
+        newInputList.push(gate.getInputPort(0));
+        newOutputList.push(port);
+        circuit.push(gate);
         const newOutput = gate.getOutputPort(0);
-        const newComponents: IOObject[] = [gate, wire];
-        const newCircuit = circuit.concat(newComponents);
 
-        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+        return {circuit: circuit, retIndex: index, recentPort: newOutput,
+            inputList: newInputList, outputList: newOutputList};
     }
     else if(tokens[index] == "(") {
         index += 1;
@@ -186,9 +197,8 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
         }
         const inputComponent = inputs.get(inputName);
         const newOutput = inputComponent.getOutputPort(0);
-        const newCircuit: IOObject[] = [];
         index += 1;
-        return {circuit: newCircuit, retIndex: index, recentPort: newOutput};
+        return {circuit: [], retIndex: index, recentPort: newOutput, inputList: [], outputList: []};
     }
 }
 
@@ -210,7 +220,7 @@ function Parse(tokens: Array<string>, index: number, inputs: Map<string, Digital
  */
 export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
                                     expression: string,
-                                    output: DigitalComponent): DigitalObjectSet | null {
+                                    output: DigitalComponent): ExpressionToCircuitReturn | null {
     if(inputs == null)  throw new Error("Null Parameter: inputs");
     if(expression == null) throw new Error("Null Parameter: expression");
     if(output == null) throw new Error("Null Parameter: output");
@@ -249,7 +259,7 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
     }
 
     if(inputs.size == 0) {
-        return new DigitalObjectSet();
+        return {components: new DigitalObjectSet(), inputList: [], outputList: []}
     }
 
     const parseRet = Parse(tokenList, 0, inputs, "|");
@@ -258,12 +268,13 @@ export function ExpressionToCircuit(inputs: Map<string, DigitalComponent>,
         throw new Error("Encountered Unmatched )");
     }
     const circuit = parseRet.circuit;
-    const outPort = parseRet.recentPort;
-    const wire = new DigitalWire(outPort, output.getInputPort(0));
-    outPort.connect(wire);
-    output.getInputPort(0).connect(wire);
-    components.push(wire);
-    components.push(output);
+    const newInputList = parseRet.inputList;
+    const newOutputList = parseRet.outputList;
+    newInputList.push(output.getInputPort(0));
+    newOutputList.push(parseRet.recentPort);
+    circuit.push(output);
 
-    return new DigitalObjectSet(circuit.concat(components));
+    const newComponents = new DigitalObjectSet(circuit.concat(components));
+
+    return {components: newComponents, inputList: newInputList, outputList: newOutputList};
 }

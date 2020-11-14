@@ -141,7 +141,13 @@ describe("Expression Parser", () => {
             const o = new LED();
             const inputMap = new Map<string, DigitalComponent>();
 
-            const objectSet = ExpressionToCircuit(inputMap, "", o);
+            const retValue = ExpressionToCircuit(inputMap, "", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
 
             expect(objectSet.toList().length).toBe(0);
         });
@@ -149,7 +155,13 @@ describe("Expression Parser", () => {
             const o = new LED();
             const inputMap = new Map<string, DigitalComponent>();
 
-            const objectSet = ExpressionToCircuit(inputMap, " ", o);
+            const retValue = ExpressionToCircuit(inputMap, " ", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             
             expect(objectSet.toList().length).toBe(0);
         });
@@ -157,7 +169,13 @@ describe("Expression Parser", () => {
             const o = new LED();
             const inputMap = new Map<string, DigitalComponent>();
 
-            const objectSet = ExpressionToCircuit(inputMap, "()", o);
+            const retValue = ExpressionToCircuit(inputMap, "()", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             
             expect(objectSet.toList().length).toBe(0);
         });
@@ -165,7 +183,13 @@ describe("Expression Parser", () => {
             const o = new LED();
             const inputMap = new Map<string, DigitalComponent>();
 
-            const objectSet = ExpressionToCircuit(inputMap, " ( ) ", o);
+            const retValue = ExpressionToCircuit(inputMap, " ( ) ", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             
             expect(objectSet.toList().length).toBe(0);
         });
@@ -179,7 +203,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -204,7 +234,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, " a ", o);
+            const retValue = ExpressionToCircuit(inputMap, " a ", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -229,7 +265,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "(a)", o);
+            const retValue = ExpressionToCircuit(inputMap, "(a)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -254,7 +296,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, " (  a ) ", o);
+            const retValue = ExpressionToCircuit(inputMap, " (  a ) ", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -279,7 +327,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -294,7 +348,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -309,7 +369,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!a", o);
+            const retValue = ExpressionToCircuit(inputMap, "!a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -334,7 +400,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!!a", o);
+            const retValue = ExpressionToCircuit(inputMap, "!!a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -359,7 +431,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!!!a", o);
+            const retValue = ExpressionToCircuit(inputMap, "!!!a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             console.log(objectSet);
@@ -386,7 +464,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!(!(a))", o);
+            const retValue = ExpressionToCircuit(inputMap, "!(!(a))", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -411,7 +495,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -436,7 +526,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a|a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a|a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -461,7 +557,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a^a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a^a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -486,7 +588,13 @@ describe("Expression Parser", () => {
                 ["a", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a^!a", o);
+            const retValue = ExpressionToCircuit(inputMap, "a^!a", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -511,7 +619,13 @@ describe("Expression Parser", () => {
                 ["longName", a]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "longName", o);
+            const retValue = ExpressionToCircuit(inputMap, "longName", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -539,7 +653,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&b", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -575,7 +695,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a & b", o);
+            const retValue = ExpressionToCircuit(inputMap, "a & b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -611,7 +737,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a^b", o);
+            const retValue = ExpressionToCircuit(inputMap, "a^b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -647,7 +779,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a|b", o);
+            const retValue = ExpressionToCircuit(inputMap, "a|b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -683,7 +821,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "(a)|b", o);
+            const retValue = ExpressionToCircuit(inputMap, "(a)|b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -719,7 +863,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!(a&b)", o);
+            const retValue = ExpressionToCircuit(inputMap, "!(a&b)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -755,7 +905,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!a&b", o);
+            const retValue = ExpressionToCircuit(inputMap, "!a&b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -791,7 +947,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&!b", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&!b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -827,7 +989,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!a&!b", o);
+            const retValue = ExpressionToCircuit(inputMap, "!a&!b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -863,7 +1031,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!(a^b)", o);
+            const retValue = ExpressionToCircuit(inputMap, "!(a^b)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -899,7 +1073,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, " ! ( a ^ b ) ", o);
+            const retValue = ExpressionToCircuit(inputMap, " ! ( a ^ b ) ", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -935,7 +1115,13 @@ describe("Expression Parser", () => {
                 ["b", b]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "!(a|b)", o);
+            const retValue = ExpressionToCircuit(inputMap, "!(a|b)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -974,7 +1160,13 @@ describe("Expression Parser", () => {
                 ["c", c]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&b&c", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&b&c", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -1033,7 +1225,13 @@ describe("Expression Parser", () => {
                 ["c", c]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&b|c", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&b|c", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -1092,7 +1290,13 @@ describe("Expression Parser", () => {
                 ["c", c]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "c|a&b", o);
+            const retValue = ExpressionToCircuit(inputMap, "c|a&b", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -1151,7 +1355,13 @@ describe("Expression Parser", () => {
                 ["c", c]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&(b|c)", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&(b|c)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
@@ -1210,7 +1420,13 @@ describe("Expression Parser", () => {
                 ["c", c]
             ]);
 
-            const objectSet = ExpressionToCircuit(inputMap, "a&(b|c)", o);
+            const retValue = ExpressionToCircuit(inputMap, "a&(b|c)", o);
+            const objectSet = retValue.components;
+            const inputList = retValue.inputList;
+            const outputList = retValue.outputList;
+            for(let i = 0; i < inputList.length; i++) {
+                new ConnectionAction(outputList[i], inputList[i]).execute();
+            }
             designer.addGroup(objectSet);
 
             test("Initial State", () => {
