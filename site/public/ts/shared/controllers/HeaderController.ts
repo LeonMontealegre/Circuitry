@@ -8,6 +8,12 @@ import {SavePDF, SavePNG} from "site/shared/utils/ImageExporter";
 import {LoadFile} from "site/shared/utils/Importer";
 import {SaveFile} from "../utils/Exporter";
 
+import {DigitalCircuitDesigner} from "digital/models/DigitalCircuitDesigner";
+import {ExpressionToCircuit} from "digital/utils/ExpressionParser";
+import {DigitalObjectSet} from "digital/utils/ComponentUtils";
+import {LED}                 from "digital/models/ioobjects/outputs/LED";
+import {Switch}              from "digital/models/ioobjects/inputs/Switch";
+
 export class HeaderController {
     protected projectNameInput: JQuery<HTMLElement> = $("input#header-project-name-input");
 
@@ -15,7 +21,7 @@ export class HeaderController {
         this.setupDropdown();
         this.setupIOInputs(main);
         this.setupHelpMenu();
-        this.setupToolsMenu();
+        this.setupToolsMenu(main);
         this.setupOther(main);
     }
 
@@ -85,11 +91,18 @@ export class HeaderController {
         });
     }
 
-    private setupToolsMenu(): void {
+    private setupToolsMenu(main: MainDesignerController): void {
         $("#header-expr-to-circuit-button").click(() => {
             this.closeDropdowns();
             $("#expr-to-circuit-popup").removeClass("invisible");
             $("#overlay").removeClass("invisible");
+        });
+
+        $("#generate-expr-to-circuit-button").click(() => {
+            // console.log($("input#expr-to-circuit-input").val() as string);
+            this.onExprToCircuitClick(main, $("input#expr-to-circuit-input").val() as string);
+            $("#expr-to-circuit-popup").addClass("invisible");
+            $("#overlay").addClass("invisible");
         });
 
         $("#overlay").click(() => {
@@ -157,6 +170,21 @@ export class HeaderController {
 
     protected onSaveCircuit(main: MainDesignerController): void {
         SaveFile(main.saveCircuit(false), this.getProjectName());
+    }
+
+    protected onExprToCircuitClick(main: MainDesignerController, expression: string): void {
+        const a = new Switch(), b = new Switch(), c = new Switch(), o = new LED();
+        const inputMap = new Map([
+            ["a", a],
+            ["b", b],
+            ["c", c]
+        ]);
+        console.log(expression);
+        const generatedObjectSet = ExpressionToCircuit(inputMap, expression, o);
+        console.log(expression);
+        if(main.getDesigner() instanceof DigitalCircuitDesigner) {
+            main.getDesigner().addGroup(generatedObjectSet);
+        }
     }
 
     public setProjectName(name?: string): void {
