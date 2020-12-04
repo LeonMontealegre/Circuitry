@@ -15,6 +15,7 @@ export class HeaderController {
         this.setupDropdown();
         this.setupIOInputs(main);
         this.setupHelpMenu();
+        this.setupToolsMenu();
         this.setupOther(main);
     }
 
@@ -81,6 +82,18 @@ export class HeaderController {
             $("#quick-start-popup").addClass("invisible");
             $("#keyboard-shortcuts-popup").addClass("invisible");
             $("#overlay").addClass("invisible");
+        });
+    }
+
+    private setupToolsMenu(): void {
+        $("#header-expr-to-circuit-button").click(() => {
+            this.closeDropdowns();
+            $("#expr-to-circuit-popup").removeClass("invisible");
+            $("#overlay").removeClass("invisible");
+        });
+
+        $("#overlay").click(() => {
+            $("#expr-to-circuit-popup").addClass("invisible");
         });
     }
 

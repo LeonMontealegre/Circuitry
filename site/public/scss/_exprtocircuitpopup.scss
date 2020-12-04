@@ -1,0 +1,87 @@
+$header-height: 50px;
+$header-padding: 5px;
+$header-border-width: 5px;
+$header-total-height: $header-height + 2*$header-padding + $header-border-width;
+
+$header-border: 0 solid $secondary-color;
+
+$header-button-height: 30px;
+$header-lock-height: 18px;
+
+.exprtocircuit__popup {
+    $width: 80%;
+    $h-padding: 40px;
+
+    position: absolute;
+    z-index: 9;
+    top: 10vh;
+    left: 50%;
+
+    overflow: auto;
+
+    width: $width;
+    max-height: 85vh;
+    margin-left: calc(-#{$width/2} - #{$h-padding});
+    padding: 15px $h-padding 25px;
+
+    border-radius: 10px;
+    background: #fff;
+
+    & h1 {
+        font-weight: normal;
+
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+
+        text-align: center;
+
+        color: #666;
+    }
+    & h2 {
+        font-weight: normal;
+
+        text-align: left;
+
+        color: #444;
+    }
+    & input {
+        font-size: 100%;
+
+        width: 100%;
+        padding: 3px;
+
+        color: #000;
+        border: 1px solid #bbb;
+        border-radius: 3px;
+    }
+    & ul {
+        padding-left: 10px;
+
+        color: #000;
+    }
+    & li {
+        margin-bottom: 5px;
+
+        list-style-type: none;
+    }
+    & #generate-expr-to-circuit-button {
+        line-height: $header-button-height;
+
+        height: $header-button-height;
+        margin-top: $header-padding;
+        padding-right: 7px;
+        padding-left: 7px;
+
+        cursor: pointer;
+        transition: 0.5s;
+
+        color: #fff;
+        border-radius: 4px;
+        background-color: $success-color;
+        &:hover {
+            color: #ccc;
+            border-color: #aaa;
+            background-color: darken($success-color, 10%);
+        }
+    }
+}
