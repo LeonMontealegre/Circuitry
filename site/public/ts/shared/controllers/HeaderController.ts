@@ -184,6 +184,7 @@ export class HeaderController {
         console.log(expression);
         if(main.getDesigner() instanceof DigitalCircuitDesigner) {
             main.getDesigner().addGroup(generatedObjectSet);
+            main.render();
         }
     }
 
