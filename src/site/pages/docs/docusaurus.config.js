@@ -1,3 +1,6 @@
+const math = require("remark-math");
+const katex = require("rehype-katex");
+
 module.exports = {
   title: "OpenCircuits",
   tagline: "The free, online, circuit designer",
@@ -8,6 +11,12 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "OpenCircuits", // Usually your GitHub org/user name.
   projectName: "OpenCircuits", // Usually your repo name.
+  stylesheets: [
+    {
+      href: "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css",
+      type: "text/css"
+    },
+  ],
   themeConfig: {
     navbar: {
       title: "OpenCircuits",
@@ -31,7 +40,7 @@ module.exports = {
         {
           label: "JSDocs",
           type: "doc",
-          docId: "js/app/core/utils/math/Vector",
+          docId: "ts/app/core/utils/math/Vector",
           position: "left"
         },
         {
@@ -90,12 +99,17 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: {
+          path: "../../../../docs",
           routeBasePath: "/",
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: "https://github.com/OpenCircuits/OpenCircuits/edit/master/docs/",
+          remarkPlugins: [math],
+          rehypePlugins: [katex]
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: [
+            require.resolve("./src/css/custom.css")
+          ]
         },
       },
     ],
