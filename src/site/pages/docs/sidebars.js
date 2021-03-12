@@ -43,7 +43,7 @@ module.exports = {
   apiSidebar: {
     "API": []
   },
-  jsDocSidebar: jsDocConfig,
+  jsDocSidebar: {...jsDocConfig},
   otherSidebar: {
     "Other": []
   }

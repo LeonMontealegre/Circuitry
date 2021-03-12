@@ -40,7 +40,7 @@ module.exports = {
         {
           label: "JSDocs",
           type: "doc",
-          docId: "ts/app/core/utils/math/Vector",
+          docId: "ts/app/Overview",
           position: "left"
         },
         {
