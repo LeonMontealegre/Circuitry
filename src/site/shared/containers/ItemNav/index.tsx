@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {connect} from "react-redux";
+import {V} from "Vector";
 
 import {CircuitInfo} from "core/utils/CircuitInfo";
 
@@ -8,6 +9,7 @@ import {ToggleItemNav} from "shared/state/ItemNav/actions";
 
 import {useHistory} from "shared/utils/hooks/useHistory";
 import {Draggable} from "shared/components/DragDroppable/Draggable";
+import { DragDropHandlers } from "shared/components/DragDroppable/DragDropHandlers";
 
 import "./index.scss";
 
@@ -44,6 +46,18 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps & OwnProps;
 function _ItemNav({ info, config, isOpen, isEnabled, isLocked, toggle }: Props) {
     const {undoHistory, redoHistory} = useHistory(info);
+    
+    const [{currItemID, numClicks}, setState] = useState({currItemID: "", numClicks: 0});
+    useEffect( () => {
+        function createNComponents(ev: MouseEvent) {
+            DragDropHandlers.drop(V(ev.x, ev.y), currItemID, numClicks);
+            setState({currItemID: "", numClicks: 0});
+        }
+        document.addEventListener("click", createNComponents);
+        return () => {
+            document.removeEventListener("click", createNComponents);
+        }
+    }, [currItemID, numClicks, setState]);
 
     return (<>
         { // Hide tab if the circuit is locked
@@ -75,11 +89,15 @@ function _ItemNav({ info, config, isOpen, isEnabled, isLocked, toggle }: Props) 
                     {section.items.map((item, j) =>
                         <Draggable key={`itemnav-section-${i}-item-${j}`}
                                    data={item.id}>
-                            <button>
+                            <button onClick={(ev) => {currItemID === item.id ? 
+                                        setState({currItemID: currItemID, numClicks: numClicks + 1}) :
+                                        setState({currItemID: item.id, numClicks: 1}); 
+                                        ev.stopPropagation();
+                                    }}>
                                 <img src={`/${config.imgRoot}/${section.id}/${item.icon}`} alt={item.label} />
                                 <br />
                                 {item.label}
-                            </button>
+                            </button>    
                         </Draggable>
                     )}
                 </React.Fragment>
