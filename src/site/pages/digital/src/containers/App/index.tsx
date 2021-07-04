@@ -25,7 +25,9 @@ import {Setup}        from "site/digital/utils/CircuitInfo/Setup";
 
 import {AppStore} from "site/digital/state";
 
+import {DigitalHeader}          from "site/digital/containers/DigitalHeader";
 import {DigitalItemNav}         from "site/digital/containers/DigitalItemNav";
+import {ExprToCircuitPopup}     from "site/digital/containers/ExprToCircuitPopup";
 import {ICDesigner}             from "site/digital/containers/ICDesigner";
 import {ICViewer}               from "site/digital/containers/ICViewer";
 import {KeyboardShortcutsPopup} from "site/digital/containers/KeyboardShortcutsPopup";
@@ -81,7 +83,7 @@ export const App = ((store: AppStore) => {
                          exampleCircuits={exampleCircuits} />
 
                 <div className="App__container">
-                    <Header img="img/icons/logo.svg"
+                    <DigitalHeader img="img/icons/logo.svg"
                             helpers={helpers} />
 
                     <main>
@@ -107,6 +109,8 @@ export const App = ((store: AppStore) => {
 
                 <QuickStartPopup />
                 <KeyboardShortcutsPopup />
+
+                <ExprToCircuitPopup info={info} />
 
                 <LoginPopup />
             </div>

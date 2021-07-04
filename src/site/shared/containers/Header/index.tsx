@@ -1,4 +1,6 @@
 import {CircuitInfoHelpers} from "shared/utils/CircuitInfoHelpers";
+import {HeaderPopups} from "shared/state/Header/state";
+import {Utility} from "shared/containers/Header/Right/UtilitiesDropdown";
 
 import {HeaderLeft} from "./Left";
 import {HeaderRight} from "./Right";
@@ -9,8 +11,9 @@ import "./index.scss";
 type Props = {
     img: string;
     helpers: CircuitInfoHelpers;
+    extraUtilities: Utility[];
 }
-export const Header = ({ img, helpers }: Props) => (
+export const Header = ({ img, helpers, extraUtilities }: Props) => (
     <header id="header">
         <HeaderLeft helpers={helpers} />
 
@@ -23,6 +26,6 @@ export const Header = ({ img, helpers }: Props) => (
             </a>
         </div>
 
-        <HeaderRight helpers={helpers} />
+        <HeaderRight helpers={helpers} extraUtilities={extraUtilities} />
     </header>
 );

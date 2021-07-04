@@ -1,0 +1,102 @@
+@import "~shared/utils/theme";
+
+.exprtocircuit__popup {
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+
+    /* Using 576px since that is the smallest cutoff for Bootstrap */
+    @media (min-width: 576px) {
+        margin: 0px 50px;
+    }
+
+    label {
+        vertical-align: middle;
+        color: $secondary-color;
+    }
+
+    button {
+        line-height: 30px;
+        height: 30px;
+        margin-top: 5px;
+        padding-right: 7px;
+        padding-left: 7px;
+        cursor: pointer;
+        transition: 0.5s;
+        color: #fff;
+        border-radius: 4px;
+        float: right;
+
+        &:enabled:hover {
+            color: #ccc;
+            border-color: #aaa;
+        }
+    }
+
+    &__generate {
+        background-color: $success-color;
+
+        &:enabled:hover {
+            background-color: darken($success-color, 10%);
+        }
+    }
+
+    input[type=text] {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0px;
+        border: 2px solid $background-color;
+        border-radius: 10px;
+        font-size: 1.35em;
+    }
+
+    input[type=checkbox], input[type=radio] {
+        -webkit-appearance: none;
+        background-color: #fff;
+        border-width: 0px 2px 0px;
+        border-style: solid;
+        border-color: $background-color;
+        padding: 9px 6.5px;
+        border-radius: 3px;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+
+        &:active {
+            background-color: $background-color;
+            border-color: $background-color;
+        }
+
+        &:checked {
+            background-color: #5ccee7;
+            border-color: #5ccee7;
+
+            &:active {
+                background-color: #4ba9bd;
+                border-color: #4ba9bd;
+            }
+        }
+    }
+
+    &__settings {
+        display: flex;
+        flex-wrap: wrap;
+
+        h3 {
+            margin: 15px 0px 2px;
+            font-size: 1.25em;
+            color: #666;
+        }
+
+        div {
+            flex-grow: 1;
+        }
+    }
+
+    &__errormessage {
+        color: $danger-color;
+        font-weight: bold;
+    }
+}
