@@ -108,7 +108,6 @@ $tab-padding: 8px;
             background-color: transparent;
 
             cursor: pointer;
-            transition: 0.5s;
 
             color: #000;
 
@@ -127,6 +126,8 @@ $tab-padding: 8px;
 
             border-color: $secondary-color;
             background-color: rgba($background-color, 0.7);
+
+            left: -20px;
 
             @media (max-width: 768px) {
                 transform: translate(calc(-100% + #{$header-border-width}), calc(-25% - 50px));
